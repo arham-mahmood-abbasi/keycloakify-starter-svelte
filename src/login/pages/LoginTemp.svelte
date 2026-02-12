@@ -24,7 +24,40 @@
   const { msg, msgStr } = $i18n;
 
   const [isLoginButtonDisabled, setIsLoginButtonDisabled] = useState(false);
+ 
 </script>
+
+{#snippet socialProvidersSnippet()}
+    {@const providers = social?.providers?.filter(p => p.alias === 'google')}
+    {#if realm.password && providers && providers.length > 0}
+        <div id="kc-social-providers" >
+            <div class="relative flex items-center py-4">
+                <div class="grow border-t border-gray-300"></div>
+                <span class="mx-4 text-[#360940] text-sm uppercase tracking-widest">
+                    Or
+                </span>
+                <div class="grow border-t border-gray-300"></div>
+            </div>
+
+            <ul class="space-y-3">
+                {#each providers as p (p.providerId)}
+                    <li>
+                        <a
+                            href={p.loginUrl}
+                            class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 py-3 hover:border-[#360940] "
+                        >
+                            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="h-7 w-7" />
+                            <span class="text-md font-medium text-black">
+                                Continue with Google
+                            </span>
+                        </a>
+                    </li>
+                {/each}
+            </ul>
+        </div>
+    {/if}
+{/snippet}
+
 
 <Template
   {kcContext}
@@ -33,6 +66,7 @@
   {classes}
   displayMessage={!messagesPerField.existsError('username', 'password')}
   displayInfo={false}
+  socialProvidersNode={socialProvidersSnippet}
 >
   {#snippet headerNode()}
     {@render msg('loginAccountTitle')()}
@@ -53,43 +87,6 @@
       </div>
     </div>
   {/snippet} -->
-  {#snippet socialProvidersNode()}
-    {@const providers = social?.providers}
-    {#if realm.password && !!providers && !!providers.length}
-      <div
-        id="kc-social-providers"
-        class={kcClsx('kcFormSocialAccountSectionClass')}
-      >
-        <hr />
-        <h2>{@render msg('identity-provider-login-label')()}</h2>
-        <ul class={kcClsx('kcFormSocialAccountListClass', providers.length > 3 && 'kcFormSocialAccountListGridClass')}>
-          {#each providers as p (p.providerId)}
-            <li>
-              <a
-                id={`social-${p.alias}`}
-                class={kcClsx(
-                  'kcFormSocialAccountListButtonClass',
-                  providers.length > 3 && 'kcFormSocialAccountGridItem',
-                )}
-                
-                href={p.loginUrl}
-              >
-                {#if p.iconClasses}
-                  <i
-                    class={clsx(kcClsx('kcCommonLogoIdP'), p.iconClasses)}
-                    aria-hidden="true"
-                  ></i>
-                {/if}
-                <div class={clsx(kcClsx('kcFormSocialAccountNameClass'), p.iconClasses && 'kc-social-icon-text')}
-                  >{@html kcSanitize(p.displayName)}</div
-                >
-              </a>
-            </li>
-          {/each}
-        </ul>
-      </div>
-    {/if}
-  {/snippet}
   <div id="kc-form">
     <div id="kc-form-wrapper">
       {#if realm.password}

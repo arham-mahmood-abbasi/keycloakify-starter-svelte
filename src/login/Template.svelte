@@ -89,6 +89,7 @@
 
             <div id="kc-content" class="w-full flex-1">
                 {@render children?.()}
+                {@render socialProvidersNode?.()}
             </div>
 
             {#if displayInfo}
